@@ -26,7 +26,8 @@ enum custom_keycodes {
     VIMWRITE,
     VIMFORCEQUIT,
     VIMFORCEWRITE,
-    VIMVERTSPLIT
+    VIMVERTSPLIT,
+    VIMFINDNERD,
     VIMTABNEW
 };
 
@@ -87,6 +88,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             SEND_STRING("\n");
         }
         break;
+    case VIMFINDNERD:
+        if (record->event.pressed) {
+            // when keycode QMKBEST is pressed
+            SEND_STRING(":NERDTreeFind");
+        } else {
+            // when keycode QMKBEST is released
+            SEND_STRING("\n");
+        }
+        break;
     }
     return true;
 };
@@ -99,7 +109,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
        KC_Q,    KC_W,    KC_E,    KC_R,    KC_T, MT(MOD_LGUI | MOD_LSFT, KC_NO), KC_PGUP,    KC_Y,    KC_U,    KC_I,   KC_O,  KC_P,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_A,    KC_S,    KC_D,    KC_F,    KC_G,  MT(MOD_LCTL | MOD_LSFT, KC_TAB),KC_PGDOWN,   KC_H,    KC_J,    KC_K,   KC_L,  KC_SCLN,\
+      KC_A,    KC_S,    KC_D,    KC_F,    KC_G,  MT(MOD_LCTL | MOD_LSFT, KC_TAB),LT(4,KC_PGDOWN),   KC_H,    KC_J,    KC_K,   KC_L,  KC_SCLN,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,MT(MOD_LALT | MOD_LSFT, KC_TAB),LT(4,KC_DELETE),  KC_N,   KC_M,  KC_COMM,  KC_DOT,  KC_SLSH,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -149,7 +159,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
      VIMQUIT, VIMWRITE, KC_TRNS, KC_TRNS, VIMTABNEW, KC_TRNS,                      KC_TRNS, KC_TRNS, KC_TRNS,  KC_TRNS, KC_TRNS,KC_TRNS,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-VIMFORCEQUIT,VIMFORCEWRITE,KC_TRNS,KC_TRNS,KC_TRNS,KC_TRNS,                      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,\
+VIMFORCEQUIT,VIMFORCEWRITE,KC_TRNS,VIMFINDNERD,KC_TRNS,KC_TRNS,                      KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      KC_TRNS,KC_TRNS,KC_TRNS,VIMVERTSPLIT,KC_TRNS, KC_TRNS,                     KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -242,7 +252,7 @@ void oled_render_logo(void) {
 
 #    define ANIM_FRAME_DURATION 100  // how long each frame lasts in ms
 // #define SLEEP_TIMER 60000 // should sleep after this period of 0 wpm, needs fixing
-#    define ANIM_SIZE 636// number of bytes in array, minimize for adequate firmware size, max is 1024
+#    define ANIM_SIZE 600 // number of bytes in array, minimize for adequate firmware size, max is 1024
 
 uint32_t anim_timer         = 0;
 uint32_t anim_sleep         = 0;
